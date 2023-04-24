@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 
-
 class lottoscreen extends StatefulWidget {
   @override
   _lottoscreenState createState() => _lottoscreenState();
@@ -12,6 +11,7 @@ class _lottoscreenState extends State<lottoscreen> {
   final List<int> _allNumbers = List.generate(52, (index) => index + 1);
   // Set up a list of 6 selected numbers
   List<int> _selectedNumbers = [];
+  List<int> _listNumbers = [];
 
   // Function to randomly generate 6 numbers
   void _generateRandomNumbers() {
@@ -32,8 +32,16 @@ class _lottoscreenState extends State<lottoscreen> {
     setState(() {
       if (_selectedNumbers.contains(number)) {
         _selectedNumbers.remove(number);
-      } else {
+      } else if (_selectedNumbers.length < 6) {
         _selectedNumbers.add(number);
+      }
+    });
+  }
+
+  void _setNumbersList() {
+    setState(() {
+      if (_selectedNumbers.length == 6) {
+        _listNumbers = _selectedNumbers;
       }
     });
   }
@@ -46,36 +54,66 @@ class _lottoscreenState extends State<lottoscreen> {
       ),
       body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         // Row of numbers from 1 to 52
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: _allNumbers
-              .map((number) => GestureDetector(
-                    onTap: () => _toggleNumber(number),
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: _selectedNumbers.contains(number)
-                              ? Colors.blue
-                              : Colors.grey,
-                          width: 2,
-                        ),
-                        borderRadius: BorderRadius.circular(5),
+        Wrap(
+          spacing: 5,
+          runSpacing: 5,
+          children: _allNumbers.map((number) {
+            Color color;
+            if (number >= 1 && number <= 13) {
+              color = Colors.red;
+            } else if (number >= 14 && number <= 26) {
+              color = Colors.yellow;
+            } else if (number >= 27 && number <= 38) {
+              color = Colors.green;
+            } else {
+              color = Colors.lightBlue;
+            }
+            return GestureDetector(
+              onTap: () => _toggleNumber(number),
+              child: Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: _selectedNumbers.contains(number)
+                        ? Colors.blue
+                        : Colors.grey,
+                    width: 0,
+                  ),
+                  borderRadius: BorderRadius.circular(50),
+                  color:
+                      _selectedNumbers.contains(number) ? Colors.blue : color,
+                ),
+                child: Center(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      color: _selectedNumbers.contains(number)
+                          ? Colors.blue
+                          : Colors.white,
+                      border: Border.all(
+                        color: _selectedNumbers.contains(number)
+                            ? Colors.blue
+                            : Colors.grey,
                       ),
-                      child: Center(
-                        child: Text(
-                          number.toString(),
-                          style: TextStyle(
-                              fontSize: 18,
-                              color: _selectedNumbers.contains(number)
-                                  ? Colors.blue
-                                  : Colors.black),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.all(5),
+                      child: Text(
+                        number.toString(),
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: _selectedNumbers.contains(number)
+                              ? Colors.white
+                              : Colors.black,
                         ),
                       ),
                     ),
-                  ))
-              .toList(),
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
         ),
         // List of selected numbers
         SizedBox(height: 20),
@@ -92,7 +130,7 @@ class _lottoscreenState extends State<lottoscreen> {
                         color: Colors.blue,
                         width: 2,
                       ),
-                      borderRadius: BorderRadius.circular(5),
+                      borderRadius: BorderRadius.circular(50),
                     ),
                     child: Center(
                       child: Text(
@@ -104,6 +142,42 @@ class _lottoscreenState extends State<lottoscreen> {
               .toList(),
         ),
         SizedBox(height: 20),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            ElevatedButton(
+              onPressed: _generateRandomNumbers,
+              child: const Text('Quick Pick'),
+            ),
+            SizedBox(width: 16),
+            ElevatedButton(
+              onPressed: _setNumbersList,
+              child: const Text('Add numbers'),
+            ),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: _listNumbers
+              .map((number) => Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.blue,
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    child: Center(
+                      child: Text(
+                        number.toString(),
+                        style: TextStyle(fontSize: 18, color: Colors.blue),
+                      ),
+                    ),
+                  ))
+              .toList(),
+        ),
       ]),
     );
   }
