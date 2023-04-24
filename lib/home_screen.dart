@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:login/checkoutpage.dart';
+import 'package:login/lotto_screen.dart';
 import 'package:login/main.dart';
 
 class HomeScreens extends StatefulWidget {
@@ -20,11 +21,8 @@ class _HomeScreenState extends State<HomeScreens> {
         style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
       ),
     ),
-    const Center(
-      child: Text(
-        'Games',
-        style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-      ),
+    Center(
+      child: lottoscreen(),
     ),
     const Center(
       child: Text(
