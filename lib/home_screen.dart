@@ -43,10 +43,10 @@ class _HomeScreenState extends State<HomeScreens> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'My App',
+          'Lotto Max',
           style: TextStyle(color: Colors.black),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.green,
         elevation: 0,
         actions: [
           IconButton(
@@ -64,45 +64,79 @@ class _HomeScreenState extends State<HomeScreens> {
                     builder: (BuildContext context) => CheckoutPage()),
               );
             },
-            icon: Icon(
-              Icons.shopping_cart_outlined,
-              color: Colors.black,
-            ),
-          ),
-          IconButton(
-            onPressed: () async {
-              await FirebaseAuth.instance.signOut();
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (BuildContext context) => const MyApp()),
-              );
-            },
             icon: const Icon(
-              Icons.logout,
+              Icons.shopping_cart_outlined,
               color: Colors.black,
             ),
           ),
         ],
       ),
       body: _widgetOptions.elementAt(_selectedIndex),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.yellow,
+              ),
+              child: Text('Drawer Header'),
+            ),
+            IconTheme(
+              data: IconThemeData(color: Colors.black),
+              child: Column(
+                children: [
+                  ListTile(
+                    leading: Icon(Icons.settings),
+                    title: const Text('Settings'),
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.logout),
+                    title: const Text('Log Out'),
+                    onTap: () async {
+                      await FirebaseAuth.instance.signOut();
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) => const MyApp()),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.home, color: Colors.black,),
+            icon: Icon(
+              Icons.home,
+              color: Colors.black,
+            ),
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.games, color: Colors.black,),
+            icon: Icon(
+              Icons.games,
+              color: Colors.black,
+            ),
             label: 'Games',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person, color: Colors.black,),
+            icon: Icon(
+              Icons.person,
+              color: Colors.black,
+            ),
             label: 'Profile',
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blue,
+        selectedItemColor: Colors.black,
         onTap: _onItemTapped,
       ),
     );

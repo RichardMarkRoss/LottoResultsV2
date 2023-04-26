@@ -49,11 +49,10 @@ class _lottoscreenState extends State<lottoscreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Lotto Ticket Selector'),
-      ),
       body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        // Row of numbers from 1 to 52
+        SizedBox(height: 20),
+        Center(child: Text('Choose Numbers: ')),
+        SizedBox(height: 10),
         Wrap(
           spacing: 5,
           runSpacing: 5,
@@ -117,7 +116,7 @@ class _lottoscreenState extends State<lottoscreen> {
         ),
         // List of selected numbers
         SizedBox(height: 20),
-        Text('Selected Numbers: '),
+        Center(child: Text('Selected Numbers: ')),
         SizedBox(height: 10),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
