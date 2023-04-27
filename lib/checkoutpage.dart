@@ -1,12 +1,14 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:login/lotto_screen.dart';
+import 'package:login/models/product.dart';
+import 'package:provider/provider.dart';
 import 'package:login/home_screen.dart';
-import 'package:login/main.dart';
 
 class CheckoutPage extends StatelessWidget {
-  bool _isDropdownOpen = false;
+  final List<Product> products = [
+  ];
 
+  CheckoutPage({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,74 +39,35 @@ class CheckoutPage extends StatelessWidget {
                 itemBuilder: (context) => [
                   PopupMenuItem(
                     child: ListTile(
-                      leading: Icon(Icons.notification_important),
-                      title: Text('Notification'),
+                      leading: const Icon(Icons.notification_important),
+                      title: const Text('Notification'),
                       onTap: () {},
                     ),
                   ),
                 ],
               );
             },
-            icon: Icon(
+            icon: const Icon(
               Icons.notifications_none,
               color: Colors.black,
             ),
           ),
         ],
       ),
-      body: SingleChildScrollView (
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            const SizedBox(height: 16.0),
-            Text(
-              'Payment details',
-              style: Theme.of(context).textTheme.headline6,
+      body: ListView.builder(
+        itemCount: products.length,
+        itemBuilder: (BuildContext context, int index) {
+          return ListTile(
+            title: Text(products[index].name),
+            subtitle: Text(products[index].description as String),
+            trailing: IconButton(
+              icon: const Icon(Icons.add),
+              onPressed: () {
+                Provider.of<Cart>(context, listen: false).addProduct(products[index]);
+              },
             ),
-            const SizedBox(height: 16.0),
-            TextFormField(
-              decoration: const InputDecoration(
-                labelText: 'Cardholder Name',
-              ),
-            ),
-            const SizedBox(height: 8.0),
-            TextFormField(
-              decoration: const InputDecoration(
-                labelText: 'Card Number',
-              ),
-            ),
-            const SizedBox(height: 8.0),
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: TextFormField(
-                    decoration: const InputDecoration(
-                      labelText: 'Expiration Date',
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8.0),
-                Expanded(
-                  child: TextFormField(
-                    decoration: const InputDecoration(
-                      labelText: 'CVV',
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: Theme.of(context).colorScheme.secondary,
-              ),
-              child: const Text('Place Order'),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'dart:math';
-
+import 'package:login/models/product.dart';
+import 'package:provider/provider.dart';
 class lottoscreen extends StatefulWidget {
   @override
   _lottoscreenState createState() => _lottoscreenState();
@@ -12,6 +12,7 @@ class _lottoscreenState extends State<lottoscreen> {
   // Set up a list of 6 selected numbers
   List<int> _selectedNumbers = [];
   List<int> _listNumbers = [];
+  final List<Product> products = [];
 
   // Function to randomly generate 6 numbers
   void _generateRandomNumbers() {
@@ -41,7 +42,11 @@ class _lottoscreenState extends State<lottoscreen> {
   void _setNumbersList() {
     setState(() {
       if (_selectedNumbers.length == 6) {
-        _listNumbers = _selectedNumbers;
+        for (var number in _selectedNumbers) {
+          if (!_listNumbers.contains(number)) {
+            _listNumbers.add(number);
+          }
+        }
       }
     });
   }
@@ -49,7 +54,10 @@ class _lottoscreenState extends State<lottoscreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      body: SingleChildScrollView(
+          child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
         SizedBox(height: 20),
         Center(child: Text('Choose Numbers: ')),
         SizedBox(height: 10),
@@ -155,29 +163,98 @@ class _lottoscreenState extends State<lottoscreen> {
             ),
           ],
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: _listNumbers
-              .map((number) => Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.blue,
-                        width: 2,
+            Wrap(
+              spacing: 10.0, // space between each item
+              runSpacing: 10.0, // space between each row
+              children: _listNumbers.asMap().entries.map((entry) {
+                final index = entry.key;
+                final number = entry.value;
+                return Stack(
+                  children: [
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.blue,
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(50),
                       ),
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                    child: Center(
-                      child: Text(
-                        number.toString(),
-                        style: TextStyle(fontSize: 18, color: Colors.blue),
+                      child: Center(
+                        child: Text(
+                          number.toString(),
+                          style: TextStyle(fontSize: 18, color: Colors.blue),
+                        ),
                       ),
                     ),
-                  ))
-              .toList(),
-        ),
-      ]),
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _listNumbers.removeAt(index);
+                          });
+                        },
+                        child: Container(
+                          width: 20,
+                          height: 20,
+                          decoration: BoxDecoration(
+                            color: Colors.blue,
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          child: Icon(
+                            Icons.close,
+                            color: Colors.white,
+                            size: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                    if ((index + 1) % 5 == 0)
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _listNumbers.removeRange(
+                                  index - 4, index + 1 > _listNumbers.length ? _listNumbers.length : index + 1);
+                            });
+                          },
+                          child: Container(
+                            width: 20,
+                            height: 20,
+                            decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            child: Icon(
+                              Icons.close,
+                              color: Colors.white,
+                              size: 16,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                );
+              }).toList(),
+            )
+      ]
+      )
+      ),
     );
+  }
+}
+class Cart extends ChangeNotifier {
+  final List<Product> _products = [];
+
+  List<Product> get products => _products;
+
+  void addProduct(Product product) {
+    _products.add(product);
+    notifyListeners();
   }
 }
